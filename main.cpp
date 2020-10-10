@@ -24,21 +24,18 @@ void initSDL()
 
 int main(int argc, char *argv[])
 {
-    std::cout << "Hello world!" << std::endl;
-
     initSDL();
 
     Window win (640, 480, 4, 5);
     std::cout << "Created a window with size " << win.getWidth() << "x" << win.getHeight() << std::endl;
-    std::cout << "glGetString" << glGetString(GL_VERSION) << std::endl;
 
     ShaderProgram sp;
     VertexShader vs (
-        readFile("D:/Docs/programming/terrain/shaders/basic.vs.glsl")
+        readFile("shaders/basic.vs.glsl")
     );
     vs.compile();
     FragmentShader fs (
-        readFile("D:/Docs/programming/terrain/shaders/basic.fs.glsl")
+        readFile("shaders/basic.fs.glsl")
     );
     fs.compile();
 
