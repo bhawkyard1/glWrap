@@ -1,0 +1,11 @@
+#include "Window."
+
+Window::Window()
+{
+    //ctor
+}
+
+Window::~Window()
+{
+    //dtor
+}

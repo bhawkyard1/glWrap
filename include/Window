@@ -1,0 +1,18 @@
+#ifndef WINDOW_
+#define WINDOW_
+
+
+class Window
+{
+    public:
+        Window();
+        virtual ~Window();
+
+    protected:
+
+    private:
+        size_t m_width;
+        size_t m_height;
+};
+
+#endif // WINDOW_
