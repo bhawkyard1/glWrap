@@ -1,7 +1,12 @@
 #include <iostream>
 #include "Window.hpp"
 
-Window::Window(size_t _width, size_t _height, int _glMajorVersion, int _glMinorVersion) :
+Window::Window(
+    size_t _width, 
+    size_t _height, 
+    int _glMajorVersion, 
+    int _glMinorVersion
+) :
     m_width(_width),
     m_height(_height),
     m_window(

@@ -33,6 +33,16 @@ void ShaderProgram::bind()
     return p;
 }*/
 
+GLint ShaderProgram::getUniformLocation(const std::string& _uniformName)
+{
+    GLint loc = glGetUniformLocation(m_id, _uniformName.c_str());
+    if(loc == -1)
+    {
+        std::cerr << "Uh oh! Invalid uniform location in ShaderProgram::getUniformLocation! Cannot find uniform with name " << _uniformName << " in " << m_id << '\n';
+    }
+    return loc;
+}
+
 void ShaderProgram::linkProgram()
 {
     glLinkProgram(m_id);
@@ -82,6 +92,25 @@ std::string ShaderProgram::getLinkingLog()
         return "Not a program.";
     }
 }
+
+void ShaderProgram::setUniform(const std::string& _uniformName, float _x)
+{
+    GLint loc = ShaderProgram::getUniformLocation(_uniformName);
+    glUniform1f(loc, _x);
+}
+
+void ShaderProgram::setUniform(const std::string& _uniformName, float _x, float _y, float _z)
+{
+    GLint loc = ShaderProgram::getUniformLocation(_uniformName);
+    glUniform3f(loc, _x, _y, _z);
+}
+
+void ShaderProgram::setUniform(const std::string& _uniformName, const glm::mat4& _mat)
+{
+    GLint loc = ShaderProgram::getUniformLocation(_uniformName);
+    glUniformMatrix4fv(loc, 1, GL_FALSE, &_mat[0][0]);
+}
+
 
 void ShaderProgram::unbind()
 {

@@ -1,14 +1,18 @@
 #include <iostream>
+#include <math.h>
 
+#include "Camera.hpp"
 #include "FragmentShader.hpp"
+#include "Mesh.hpp"
 #include "ReadFile.hpp"
 #include "SDLEventLoop.hpp"
 #include "SDLEventReceiver.hpp"
 #include "ShaderProgram.hpp"
-#include "VertexArrayObject.hpp"
-#include "VertexBufferObject.hpp"
+#include "Transform.hpp"
 #include "VertexShader.hpp"
 #include "Window.hpp"
+
+#include "glm/gtx/string_cast.hpp"
 
 void initSDL()
 {
@@ -27,15 +31,14 @@ int main(int argc, char *argv[])
     initSDL();
 
     Window win (640, 480, 4, 5);
-    std::cout << "Created a window with size " << win.getWidth() << "x" << win.getHeight() << std::endl;
 
     ShaderProgram sp;
     VertexShader vs (
-        readFile("shaders/basic.vs.glsl")
+        readFile("shaders/basicMVP.vs")
     );
     vs.compile();
     FragmentShader fs (
-        readFile("shaders/basic.fs.glsl")
+        readFile("shaders/basic.fs")
     );
     fs.compile();
 
@@ -43,28 +46,52 @@ int main(int argc, char *argv[])
     sp.attachShader(fs);
     sp.linkProgram();
 
-    VertexBufferObject vbo;
-    VertexArrayObject vao;
+    Mesh bunny;
+    bunny.loadObj(
+        readFileToVector("resources/bunny.obj")
+    );
+    // bunny.loadObj({
+    //     "v -1 -1 0",
+    //     "v 1 -1 0",
+    //     "v -1 1 0",
+    //     "v -1 1 0",
+    //     "v 1 -1 0",
+    //     "v 1 1 0",
+    //     "vt 0 0",
+    //     "vt 1 0",
+    //     "vt 0 1",
+    //     "vt 0 1",
+    //     "vt 1 0",
+    //     "vt 1 1",
+    //     "vn 0 0 -1",
+    //     "vn 0 0 -1",
+    //     "vn 0 0 -1"
+    //     "vn 0 0 -1"
+    //     "vn 0 0 -1"
+    //     "vn 0 0 -1"
+    // });
+    bunny.generateBuffers();
 
-    std::vector<GLfloat> vertexData {
-        -0.5f, -0.5f,
-         0.5f, -0.5f,
-         0.5f,  0.5f,
-        -0.5f,  0.5f
-    };
-    vbo.bind();
-    vbo.bufferData(vertexData);
+    Transform root;
+    Transform bunnyTransform;
+    bunnyTransform.setTranslation(glm::vec3(0.0, 0.0, 0.0));
+    root.addChild(bunnyTransform);
 
-    vao.bind();
-    vao.enableVertexAttribArray(0);
-    vao.vertexAttribPointer(2, GL_FLOAT);
-    vbo.unbind();
-    vao.unbind();
+    Camera camera (
+        win.getWidth() / win.getHeight(),
+        30.0,
+        0.001,
+        32.0
+    );
+    Transform cameraTransform;
+    cameraTransform.setTranslation(glm::vec3(0.0, 0.0, -5));
+    root.addChild(cameraTransform);
 
     SDLEventLoop loop = SDLEventLoop();
     SDLEventReceiver watcher = SDLEventReceiver();
     loop.addReceiver(&watcher);
 
+    double t = 0.0;
     while(!watcher.isFinished())
     {
         //std::cout << "Listening for events..." << std::endl;
@@ -72,12 +99,29 @@ int main(int argc, char *argv[])
 
         win.clear();
         sp.bind();
+        glm::mat4 MVP = (
+            camera.getProjectMatrix() * 
+            cameraTransform.getMatrix(WORLD) *
+            bunnyTransform.getMatrix(WORLD)
+        );
+        sp.setUniform(
+            "MVP",
+            MVP
+        );
 
-        vao.bind();
-        glDrawArraysEXT(GL_TRIANGLE_FAN, 0, 4);
-        vao.unbind();
+        bunny.bind();
+        //std::cout << "MVP" << glm::to_string(MVP) << "\n";
+        glDrawArraysEXT(GL_TRIANGLES, 0, bunny.size());
+        bunny.unbind();
 
         win.swap();
+
+        cameraTransform.setTranslation(glm::vec3(0.0, 0.0, sin(t) * 0.5 - 0.55));
+        t+=0.025;
+        if(t > 2.0*M_PI)
+        {
+            t=0;
+        }
     }
 
     SDL_Quit();

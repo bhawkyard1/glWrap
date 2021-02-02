@@ -1,6 +1,8 @@
 #ifndef SHADERPROGRAM_HPP
 #define SHADERPROGRAM_HPP
 
+#include "glm/matrix.hpp"
+
 #include "GLHeaders.hpp"
 #include "Shader.hpp"
 
@@ -16,10 +18,15 @@ class ShaderProgram
         void linkProgram();
         void unbind();
 
+        void setUniform(const std::string& _uniformName, float _x);
+        void setUniform(const std::string& _uniformName, float _x, float _y, float _z);
+        void setUniform(const std::string& _uniformName, const glm::mat4& _mat);
+
     protected:
 
     private:
         std::string getLinkingLog();
+        GLint getUniformLocation(const std::string& _uniformName);
         GLuint m_id;
 };
 
