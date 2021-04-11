@@ -1,7 +1,8 @@
 #version 410
 
 in vec3 fragNrm;
+in vec2 fragUV;
 
 void main() {
-    gl_FragColor = vec4(fragNrm.zyx, 1.0);
+    gl_FragColor = vec4(fragNrm.xyz, 1.0);
 }

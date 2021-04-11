@@ -8,6 +8,7 @@
 #include "Event.hpp"
 #include "EventReceiver.hpp"
 
+#include <iostream>
 class EventDispatcher
 {
     public:
@@ -29,16 +30,19 @@ class EventDispatcher
         }
 
     protected:
-        void notify(Event event)
+        template <class T>
+        void notify(T event)
         {
+            std::cout << "Dispatching event to " << m_receivers.size() << " receivers...\n";
             for(auto &receiver : m_receivers)
             {
+                std::cout << "\tDispatch!\n";
                 receiver->onNotify(event);
             }
         }
 
     private:
-        std::vector<EventReceiver*> m_receivers;
+        std::vector<EventReceiver*> m_receivers; 
 };
 
 #endif // EVENTDISPATCHER_HPP

@@ -31,6 +31,8 @@ Event.hpp
 ../include/Event.hpp
 EventReceiver.hpp
 ../include/EventReceiver.hpp
+iostream
+-
 
 ../include/EventReceiver.hpp
 Event.hpp
@@ -51,6 +53,10 @@ GL/glew.h
 -
 SDL2/SDL_opengl.h
 -
+
+../include/GLInit.hpp
+GLHeaders.hpp
+../include/GLHeaders.hpp
 
 ../include/Mesh.hpp
 string
@@ -84,6 +90,16 @@ Event.hpp
 EventReceiver.hpp
 ../include/EventReceiver.hpp
 
+../include/SDLInputHandler.hpp
+map
+-
+SDL2/SDL.h
+-
+SDL2/SDL_keysym.h
+-
+EventReceiver.hpp
+../include/EventReceiver.hpp
+
 ../include/Shader.hpp
 string
 -
@@ -99,12 +115,16 @@ Shader.hpp
 ../include/Shader.hpp
 
 ../include/Transform.hpp
+iostream
+-
 vector
 -
 glm/matrix.hpp
-../include/glm/matrix.hpp
+-
+glm/gtc/quaternion.hpp
+-
 glm/vec3.hpp
-../include/glm/vec3.hpp
+-
 
 ../include/VertexArrayObject.hpp
 GLBindable.hpp
@@ -1597,6 +1617,8 @@ Camera.hpp
 /home/ben/code/projects/glWrap/Camera.hpp
 FragmentShader.hpp
 /home/ben/code/projects/glWrap/FragmentShader.hpp
+GLInit.hpp
+/home/ben/code/projects/glWrap/GLInit.hpp
 Mesh.hpp
 /home/ben/code/projects/glWrap/Mesh.hpp
 ReadFile.hpp
@@ -1605,6 +1627,8 @@ SDLEventLoop.hpp
 /home/ben/code/projects/glWrap/SDLEventLoop.hpp
 SDLEventReceiver.hpp
 /home/ben/code/projects/glWrap/SDLEventReceiver.hpp
+SDLInputHandler.hpp
+/home/ben/code/projects/glWrap/SDLInputHandler.hpp
 ShaderProgram.hpp
 /home/ben/code/projects/glWrap/ShaderProgram.hpp
 Transform.hpp

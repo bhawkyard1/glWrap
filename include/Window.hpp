@@ -10,7 +10,7 @@
 class Window
 {
     public:
-        Window(size_t, size_t, int, int);
+        Window(size_t, size_t);
         ~Window();
 
         void clear();

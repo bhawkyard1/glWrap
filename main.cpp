@@ -3,10 +3,12 @@
 
 #include "Camera.hpp"
 #include "FragmentShader.hpp"
+#include "GLInit.hpp"
 #include "Mesh.hpp"
 #include "ReadFile.hpp"
 #include "SDLEventLoop.hpp"
 #include "SDLEventReceiver.hpp"
+#include "SDLInputHandler.hpp"
 #include "ShaderProgram.hpp"
 #include "Transform.hpp"
 #include "VertexShader.hpp"
@@ -29,8 +31,8 @@ void initSDL()
 int main(int argc, char *argv[])
 {
     initSDL();
-
-    Window win (640, 480, 4, 5);
+    Window win (640, 480);
+    initGL(4, 5);
 
     ShaderProgram sp;
     VertexShader vs (
@@ -50,32 +52,35 @@ int main(int argc, char *argv[])
     bunny.loadObj(
         readFileToVector("resources/bunny.obj")
     );
-    // bunny.loadObj({
-    //     "v -1 -1 0",
-    //     "v 1 -1 0",
-    //     "v -1 1 0",
-    //     "v -1 1 0",
-    //     "v 1 -1 0",
-    //     "v 1 1 0",
-    //     "vt 0 0",
-    //     "vt 1 0",
-    //     "vt 0 1",
-    //     "vt 0 1",
-    //     "vt 1 0",
-    //     "vt 1 1",
-    //     "vn 0 0 -1",
-    //     "vn 0 0 -1",
-    //     "vn 0 0 -1"
-    //     "vn 0 0 -1"
-    //     "vn 0 0 -1"
-    //     "vn 0 0 -1"
-    // });
     bunny.generateBuffers();
 
+    Mesh plane;
+    plane.loadObj({
+        "v -1 -1 0",
+        "v 1 -1 0",
+        "v -1 1 0",
+        "v -1 1 0",
+        "v 1 -1 0",
+        "v 1 1 0",
+        "vt 0 0",
+        "vt 1 0",
+        "vt 0 1",
+        "vt 0 1",
+        "vt 1 0",
+        "vt 1 1",
+        "vn 0 0 -1",
+        "vn 0 0 -1",
+        "vn 0 0 -1"
+        "vn 0 0 -1"
+        "vn 0 0 -1"
+        "vn 0 0 -1"
+    });
+    plane.generateBuffers();
+
     Transform root;
-    Transform bunnyTransform;
-    bunnyTransform.setTranslation(glm::vec3(0.0, 0.0, 0.0));
-    root.addChild(bunnyTransform);
+    Transform geoTransform;
+    geoTransform.setScale(1, -1, 1);
+    root.addChild(geoTransform);
 
     Camera camera (
         win.getWidth() / win.getHeight(),
@@ -84,12 +89,14 @@ int main(int argc, char *argv[])
         32.0
     );
     Transform cameraTransform;
-    cameraTransform.setTranslation(glm::vec3(0.0, 0.0, -5));
+    // cameraTransform.setTranslation(glm::vec3(0.0, 0.0, -1000));
     root.addChild(cameraTransform);
 
     SDLEventLoop loop = SDLEventLoop();
     SDLEventReceiver watcher = SDLEventReceiver();
+    SDLInputHandler inputHandler = SDLInputHandler();
     loop.addReceiver(&watcher);
+    loop.addReceiver(&inputHandler);
 
     double t = 0.0;
     while(!watcher.isFinished())
@@ -102,7 +109,7 @@ int main(int argc, char *argv[])
         glm::mat4 MVP = (
             camera.getProjectMatrix() * 
             cameraTransform.getMatrix(WORLD) *
-            bunnyTransform.getMatrix(WORLD)
+            geoTransform.getMatrix(WORLD)
         );
         sp.setUniform(
             "MVP",
@@ -110,17 +117,22 @@ int main(int argc, char *argv[])
         );
 
         bunny.bind();
-        //std::cout << "MVP" << glm::to_string(MVP) << "\n";
         glDrawArraysEXT(GL_TRIANGLES, 0, bunny.size());
         bunny.unbind();
 
+        plane.bind();
+        glDrawArraysEXT(GL_TRIANGLES, 0, plane.size());
+        plane.unbind();
+
         win.swap();
 
-        cameraTransform.setTranslation(glm::vec3(0.0, 0.0, sin(t) * 0.5 - 0.55));
+        cameraTransform.setTranslation(0.0, 0.0, sin(t) * 0.5 - 1);
+        geoTransform.setRotation(0, t, 0);
+
         t+=0.025;
-        if(t > 2.0*M_PI)
+        if(t > M_PI)
         {
-            t=0;
+            t=-M_PI;
         }
     }
 

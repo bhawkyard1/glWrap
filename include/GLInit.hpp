@@ -3,6 +3,6 @@
 
 #include "GLHeaders.hpp"
 
-void InitGL(int _majorVersion, int _minorVersion);
+void initGL(int _majorVersion, int _minorVersion);
 
 #endif // GLINIT_HPP

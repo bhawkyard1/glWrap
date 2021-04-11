@@ -12,9 +12,8 @@ class SDLEventReceiver : public EventReceiver
 
         bool isFinished() const {return m_finished;}
 
-
-    protected:
-        void onNotify(Event event);
+        void onNotify(MouseButtonEvent event);
+        void onNotify(QuitEvent event);
 
     private:
         bool m_finished;
